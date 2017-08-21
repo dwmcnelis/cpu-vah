@@ -1,5 +1,7 @@
 cpu-vah
+cpu-vh
 output/*
 build/*
 scripts/links/*
 *~
+*.sublime-*
