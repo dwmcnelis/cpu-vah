@@ -49,6 +49,8 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 	@echo "Compiling: $< ($(COMPILER))"
 	$(COMPILER) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
+all: $(EXE)
+
 test: $(EXE)
 	echo "Testing:   $(EXE)"
 	$(DIR_MAIN)$(EXE) --test
