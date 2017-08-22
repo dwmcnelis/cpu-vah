@@ -27,10 +27,10 @@ ifeq ($(UNAME), Linux)
 LIBS = -lm -lgsl -lgslcblas -lconfig -lgtest
 endif
 ifeq ($(UNAME), Darwin)
-LIBS = -lm -lgsl -lgslcblas -lconfig -lgtest -largp -lc++
+LIBS = -L /usr/local/lib -lm -lgsl -lgslcblas -lconfig -lgtest -largp -lc++
 endif
 
-INCLUDES = -I rhic/rhic-core/src/include -I rhic/rhic-harness/src/main/include -I rhic/rhic-trunk/src/include -I rhic/rhic-harness/src/include
+INCLUDES =  -I /usr/local/include -I rhic/rhic-core/src/include -I rhic/rhic-harness/src/main/include -I rhic/rhic-trunk/src/include -I rhic/rhic-harness/src/include
 
 CPP := $(shell find $(DIR_SRC) -name '*.cpp')
 CPP_OBJ  = $(CPP:$(DIR_SRC)%.cpp=$(DIR_OBJ)%.o)
