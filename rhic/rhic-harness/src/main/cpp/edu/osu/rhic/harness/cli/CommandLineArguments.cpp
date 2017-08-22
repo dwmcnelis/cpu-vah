@@ -16,7 +16,6 @@ const char *argp_program_bug_address;
 */
 static struct argp_option options[] =
 {
-		{"test",  't', "RUN_TEST", OPTION_ARG_OPTIONAL, "Run software tests"},
 		{"hydro",  'h', "RUN_HYDRO", OPTION_ARG_OPTIONAL, "Run hydrodynamic simulation"},
 		{"output",  'o', "OUTPUT_DIRECTORY", 0, "Path to output directory"},
 		{"config", 'c', "CONFIG_DIRECTORY", 0, "Path to configuration directory"},
@@ -33,9 +32,6 @@ parse_opt(int key, char *arg, struct argp_state *state) {
 	struct CommandLineArguments *cli = (CommandLineArguments *)state->input;
 
 	switch (key) {
-	case 't':
-		cli->runTest = true;
-		break;
 	case 'h':
 		cli->runHydro = true;
 		break;
@@ -95,7 +91,6 @@ error_t loadCommandLineArguments(int argc, char **argv, void * cli_params, const
 	argp_program_bug_address = address;
 
   /* Set argument defaults */
-	cli->runTest = false;
 	cli->runHydro = false;
 	cli->outputDirectory = NULL;
 	cli->configDirectory = NULL;

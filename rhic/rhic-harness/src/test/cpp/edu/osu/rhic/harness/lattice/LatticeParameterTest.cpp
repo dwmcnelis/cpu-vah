@@ -5,13 +5,13 @@
  *      Author: bazow
  */
 
-#include "gtest/gtest.h"
 #include <libconfig.h>
 #include <unistd.h>
 
+#include "edu/osu/rhic/harness/cli/catch.hpp"
 #include "edu/osu/rhic/harness/lattice/LatticeParameters.h"
 
-TEST(loadLatticeParameters, LatticeParametersFromConfFile) {
+TEST_CASE( "lattice parameters from file", "[harness][parameters]" ) {
 	struct LatticeParameters params;
 	config_t config;
 	config_init(&config);
@@ -23,31 +23,31 @@ TEST(loadLatticeParameters, LatticeParametersFromConfFile) {
 	sprintf(pathToConfigFile, "%s/rhic/rhic-harness/src/test/resources", rootDirectory);
 	loadLatticeParameters(&config, pathToConfigFile, &params);
 	config_destroy(&config);
-	EXPECT_EQ(10, params.numLatticePointsX);
-	EXPECT_EQ(15, params.numLatticePointsY);
-	EXPECT_EQ(20, params.numLatticePointsRapidity);
-	EXPECT_EQ(133, params.numProperTimePoints);
 
-	EXPECT_EQ(0.1, params.latticeSpacingX);
-	EXPECT_EQ(0.2, params.latticeSpacingY);
-	EXPECT_EQ(1, params.latticeSpacingRapidity);
-	EXPECT_EQ(0.5, params.latticeSpacingProperTime);
+    REQUIRE( params.numLatticePointsX == 10 );
+    REQUIRE( params.numLatticePointsY == 15 );
+    REQUIRE( params.numLatticePointsRapidity == 20 );
+    REQUIRE( params.numProperTimePoints == 133 );
+    REQUIRE( params.latticeSpacingX == 0.1 );
+    REQUIRE( params.latticeSpacingY == 0.2 );
+    REQUIRE( params.latticeSpacingRapidity == 1 );
+    REQUIRE( params.latticeSpacingProperTime == 0.5 );
 }
 
-TEST(loadLatticeParameters, DefaultLatticeParameters) {
+TEST_CASE( "lattice default parameters", "[harness][parameters]" ) {
 	struct LatticeParameters params;
 	config_t config;
 	config_init(&config);
 	loadLatticeParameters(&config, "", &params);
 	config_destroy(&config);
-	EXPECT_EQ(128, params.numLatticePointsX);
-	EXPECT_EQ(128, params.numLatticePointsY);
-	EXPECT_EQ(64, params.numLatticePointsRapidity);
-	EXPECT_EQ(10, params.numProperTimePoints);
 
-	EXPECT_EQ(0.08, params.latticeSpacingX);
-	EXPECT_EQ(0.08, params.latticeSpacingY);
-	EXPECT_EQ(0.3, params.latticeSpacingRapidity);
-	EXPECT_EQ(0.01, params.latticeSpacingProperTime);
+    REQUIRE( params.numLatticePointsX == 128 );
+    REQUIRE( params.numLatticePointsY == 128 );
+    REQUIRE( params.numLatticePointsRapidity == 64 );
+    REQUIRE( params.numProperTimePoints == 10 );
+    REQUIRE( params.latticeSpacingX == 0.08 );
+    REQUIRE( params.latticeSpacingY == 0.08 );
+    REQUIRE( params.latticeSpacingRapidity == 0.3 );
+    REQUIRE( params.latticeSpacingProperTime == 0.01 );
 }
 

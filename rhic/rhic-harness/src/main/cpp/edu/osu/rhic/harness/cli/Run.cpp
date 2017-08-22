@@ -14,8 +14,6 @@
 #include <unistd.h>		// for current working directory
 #include <libconfig.h>
 
-#include "gtest/gtest.h" // for unit testing
-
 #include "edu/osu/rhic/harness/cli/CommandLineArguments.h"
 #include "edu/osu/rhic/harness/lattice/LatticeParameters.h"
 #include "edu/osu/rhic/harness/ic/InitialConditionParameters.h"
@@ -24,11 +22,6 @@
 
 const char *version = "";
 const char *address = "";
-
-int runTest(int argc, char **argv) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
 
 void runHydro(void * latticeParams, void * initCondParams, void * hydroParams, const char *rootDirectory, const char *outputDir) {
 	run(latticeParams, initCondParams, hydroParams, rootDirectory, outputDir);
@@ -54,10 +47,6 @@ int main(int argc, char **argv) {
 		printf("runHydro = True\n");
 	else
 		printf("runHydro = False\n");
-	if (cli.runTest)
-		printf("runTest = True\n");
-	else
-		printf("runTest = False\n");
 
 	//=========================================
 	// Set parameters from configuration files
@@ -76,14 +65,6 @@ int main(int argc, char **argv) {
 	config_init(&hydroConfig);
 	loadHydroParameters(&hydroConfig, cli.configDirectory, &hydroParams);
 	config_destroy (&hydroConfig);
-
-	//=========================================
-	// Run tests
-	//=========================================
-	if (cli.runTest) {
-		int status = runTest(argc, argv);		
-		printf("Done tests.\n");
-	}
 
 	//=========================================
 	// Run hydro

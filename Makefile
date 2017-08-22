@@ -24,15 +24,15 @@ OPTIMIZATION = -O3
 endif
 
 ifeq ($(UNAME), Linux)
-LIBS = -lm -lgsl -lgslcblas -lconfig -lgtest
+LIBS = -lm -lgsl -lgslcblas -lconfig
 endif
 ifeq ($(UNAME), Darwin)
-LIBS = -lm -lgsl -lgslcblas -lconfig -lgtest -largp -lc++
+LIBS = -lm -lgsl -lgslcblas -lconfig -largp -lc++
 endif
 
-INCLUDES = -I rhic/rhic-core/src/include -I rhic/rhic-harness/src/main/include -I rhic/rhic-trunk/src/include -I rhic/rhic-harness/src/include
+INCLUDES = -I rhic/rhic-core/src/include -I rhic/rhic-harness/src/main/include -I rhic/rhic-trunk/src/include -I rhic/rhic-harness/src/include -I rhic
 
-CPP := $(shell find $(DIR_SRC) -name '*.cpp')
+CPP := $(shell find $(DIR_SRC) -name '*.cpp' -and -not -name '*Test.cpp' )
 CPP_OBJ  = $(CPP:$(DIR_SRC)%.cpp=$(DIR_OBJ)%.o)
 OBJ = $(CPP_OBJ)
 
@@ -41,19 +41,27 @@ EXE = cpu-vh
 $(EXE): $(OBJ)
 	echo "Linking:   $@ ($(COMPILER))"
 	$(COMPILER) $(LINK_OPTIONS) -o $@ $^ $(LIBS) $(INCLUDES)
-	echo "Testing:   $@"
-	$(DIR_MAIN)$(EXE) --test
 
 $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 	@[ -d $(DIR_OBJ) ] || find rhic/rhic-core rhic/rhic-harness rhic/rhic-trunk -type d -exec mkdir -p ./build/{} \;
 	@echo "Compiling: $< ($(COMPILER))"
 	$(COMPILER) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
+TEST_CPP := $(shell find $(DIR_SRC) -name '*.cpp' -and -not -name '*Run.cpp')
+TEST_CPP_OBJ  = $(TEST_CPP:$(DIR_SRC)%.cpp=$(DIR_OBJ)%.o)
+TEST_OBJ = $(TEST_CPP_OBJ)
+
+TEST_EXE = cpu-vh-test
+
+$(TEST_EXE): $(TEST_OBJ)
+	echo "Linking:   $@ ($(COMPILER))"
+	$(COMPILER) $(LINK_OPTIONS) -o $@ $^ $(LIBS) $(INCLUDES)
+
 all: $(EXE)
 
-test: $(EXE)
-	echo "Testing:   $(EXE)"
-	$(DIR_MAIN)$(EXE) --test
+test: $(TEST_EXE)
+	echo "Testing:   $(TEST_EXE)"
+	$(DIR_MAIN)$(TEST_EXE)
 
 hydro: $(EXE)
 	echo "Running Hydro:   $(EXE)"
@@ -63,6 +71,6 @@ hydro: $(EXE)
 
 clean:
 	@echo "Object files and executable deleted"
-	if [ -d "$(DIR_OBJ)" ]; then rm -rf $(EXE) $(DIR_OBJ)/*; rmdir $(DIR_OBJ); rmdir $(DIR_BUILD); fi
+	if [ -d "$(DIR_OBJ)" ]; then rm -rf $(EXE) $(TEST_EXE) $(DIR_OBJ)/*; rmdir $(DIR_OBJ); rmdir $(DIR_BUILD); fi
 
 .SILENT:

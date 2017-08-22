@@ -5,13 +5,13 @@
  *      Author: bazow
  */
 
-#include "gtest/gtest.h"
 #include <libconfig.h>
-#include<unistd.h>
+#include <unistd.h>
 
+#include "edu/osu/rhic/harness/cli/catch.hpp"
 #include "edu/osu/rhic/harness/ic/InitialConditionParameters.h"
 
-TEST(loadInitialConditionParameters, InitialConditionParametersFromConfFile) {
+TEST_CASE( "ic parameters from file", "[harness][parameters]" ) {
 	struct InitialConditionParameters params;
 	config_t config;
 	config_init(&config);
@@ -23,28 +23,30 @@ TEST(loadInitialConditionParameters, InitialConditionParametersFromConfFile) {
 	sprintf(pathToConfigFile, "%s/rhic/rhic-harness/src/test/resources", rootDirectory);
 	loadInitialConditionParameters(&config, pathToConfigFile, &params);
 	config_destroy(&config);
-	EXPECT_EQ(0, params.initialConditionType);
-	EXPECT_EQ(63, params.numberOfNucleonsPerNuclei);
-	EXPECT_EQ(0.6, params.initialEnergyDensity);
-	EXPECT_EQ(52.0, params.scatteringCrossSectionNN);
-	EXPECT_EQ(20.0, params.impactParameter);
-	EXPECT_EQ(0.1, params.fractionOfBinaryCollisions);
-	EXPECT_EQ(0.2, params.rapidityVariance);
-	EXPECT_EQ(0.3, params.rapidityMean);
+
+    REQUIRE( params.initialConditionType == 0 );
+    REQUIRE( params.numberOfNucleonsPerNuclei == 63 );
+    REQUIRE( params.initialEnergyDensity == 0.6 );
+    REQUIRE( params.scatteringCrossSectionNN == 52.0 );
+    REQUIRE( params.impactParameter == 20.0 );
+    REQUIRE( params.fractionOfBinaryCollisions == 0.1 );
+    REQUIRE( params.rapidityVariance == 0.2 );
+    REQUIRE( params.rapidityMean == 0.3 );
 }
 
-TEST(loadInitialConditionParameters, DefaultInitialConditionParameters) {
+TEST_CASE( "ic default parameters", "[harness][parameters]" ) {
 	struct InitialConditionParameters params;
 	config_t config;
 	config_init(&config);
 	loadInitialConditionParameters(&config, "", &params);
 	config_destroy(&config);
-	EXPECT_EQ(2, params.initialConditionType);
-	EXPECT_EQ(208, params.numberOfNucleonsPerNuclei);
-	EXPECT_EQ(1, params.initialEnergyDensity);
-	EXPECT_EQ(62, params.scatteringCrossSectionNN);
-	EXPECT_EQ(7, params.impactParameter);
-	EXPECT_EQ(0.5, params.fractionOfBinaryCollisions);
-	EXPECT_EQ(0.5, params.rapidityVariance);
-	EXPECT_EQ(0.5, params.rapidityMean);
+
+    REQUIRE( params.initialConditionType == 2 );
+    REQUIRE( params.numberOfNucleonsPerNuclei == 208 );
+    REQUIRE( params.initialEnergyDensity == 1 );
+    REQUIRE( params.scatteringCrossSectionNN == 62 );
+    REQUIRE( params.impactParameter == 7 );
+    REQUIRE( params.fractionOfBinaryCollisions == 0.5 );
+    REQUIRE( params.rapidityVariance == 0.5 );
+    REQUIRE( params.rapidityMean == 0.5 );
 }
