@@ -5,6 +5,9 @@
  *      Author: bazow
  */
 
+#include <stdio.h>
+#include <string.h>
+
 #include "edu/osu/rhic/harness/lattice/LatticeParameters.h"
 #include "edu/osu/rhic/harness/util/Properties.h"
 
@@ -19,12 +22,14 @@ double latticeSpacingRapidity;
 double latticeSpacingProperTime;
 
 void loadLatticeParameters(config_t *cfg, const char* configDirectory, void * params) {
-	// Read the file
-	char fname[255];
-	sprintf(fname, "%s/%s", configDirectory, "lattice.properties");
-	if (!config_read_file(cfg, fname)) {
-		fprintf(stderr, "No configuration file  %s found for lattice parameters - %s.\n", fname, config_error_text(cfg));
-		fprintf(stderr, "Using default lattice configuration parameters.\n");
+	if (strlen(configDirectory) > 0) {
+		// Read the file
+		char fname[255];
+		sprintf(fname, "%s/%s", configDirectory, "lattice.properties");
+		if (!config_read_file(cfg, fname)) {
+			fprintf(stderr, "No configuration file  %s found for lattice parameters - %s.\n", fname, config_error_text(cfg));
+			fprintf(stderr, "Using default lattice configuration parameters.\n");
+		}
 	}
 
 	getIntegerProperty(cfg, "numLatticePointsX", &numLatticePointsX, 128);

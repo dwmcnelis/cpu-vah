@@ -5,6 +5,8 @@
  *      Author: bazow
  */
 
+#include <string.h>
+
 #include "edu/osu/rhic/harness/ic/InitialConditionParameters.h"
 #include "edu/osu/rhic/harness/util/Properties.h"
 
@@ -22,15 +24,17 @@ double rapidityVariance; // \sigma^{2}_{\eta}
 double rapidityMean; // flat region around \ets_s = 0
 
 void loadInitialConditionParameters(config_t *cfg, const char* configDirectory, void * params) {
-	// Read the file
-	char fname[255];
-	sprintf(fname, "%s/%s", configDirectory, "ic.properties");
-	if (!config_read_file(cfg, fname)) {
-		fprintf(stderr, "No configuration file  %s found for initial condition parameters - %s.\n", fname, config_error_text(cfg));
-		fprintf(stderr, "Using default initial condition configuration parameters.\n");
+	if (strlen(configDirectory) > 0) {
+		// Read the file
+		char fname[255];
+		sprintf(fname, "%s/%s", configDirectory, "ic.properties");
+		if (!config_read_file(cfg, fname)) {
+			fprintf(stderr, "No configuration file  %s found for initial condition parameters - %s.\n", fname, config_error_text(cfg));
+			fprintf(stderr, "Using default initial condition configuration parameters.\n");
+		}
 	}
 
-	getIntegerProperty(cfg, "initialConditionType", &initialConditionType, 2);	
+	getIntegerProperty(cfg, "initialConditionType", &initialConditionType, 2);
 	getIntegerProperty(cfg, "numberOfNucleonsPerNuclei", &numberOfNucleonsPerNuclei, 208);
 
 	getDoubleProperty(cfg, "initialEnergyDensity", &initialEnergyDensity, 1.0);
